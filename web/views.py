@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Categoria, Producto
 
@@ -26,3 +26,25 @@ def productosPorCategoria(request,categoria_id):
         'productos':listaProductos
     }
     return render(request, 'index.html',context)
+
+
+""" vista para filtrado de productos por nombre """
+def productosPorNombre(request):
+    nombre = request.POST['nombre']
+
+    listaProductos = Producto.objects.filter(nombre__contains=nombre)
+    listaCategorias = Categoria.objects.all()
+    context = {
+        'categorias':listaCategorias,
+        'productos':listaProductos
+    }
+    return render(request, 'index.html',context)
+
+
+""" vista para el detalle de producto"""
+def productoDetalle(request,producto_id):
+    objProducto = get_object_or_404(Producto,pk=producto_id)
+    context = {
+        'producto':objProducto
+    }
+    return render(request, 'producto.html',context)
