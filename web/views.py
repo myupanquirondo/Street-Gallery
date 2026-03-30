@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Categoria, Producto
 from .carrito import Cart
@@ -65,6 +65,9 @@ def agregarCarrito(request,producto_id):
     objProducto = Producto.objects.get(pk=producto_id)
     carritoProducto = Cart(request)
     carritoProducto.add(objProducto, cantidad)
+
+    if request.method == 'GET':
+        return redirect('/')
     
     return render(request, 'carrito.html')
 
