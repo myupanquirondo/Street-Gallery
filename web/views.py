@@ -3,6 +3,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Categoria, Producto
 from .carrito import Cart
 
+from django.contrib.auth.models import User
+from django.contrib.auth import login,logout,authenticate
+
 # Create your views here.
 """ VISTAS PARA EL CATALOGO DE PRODUCTOS """
 def index(request):
@@ -82,3 +85,22 @@ def limpiarCarrito(request):
     carritoProducto = Cart(request)
     carritoProducto.clear()
     return render(request, 'carrito.html')
+
+
+""" VISTAS PARA CLIENTES Y USUARIOS """
+
+def crearUsuario(request):
+    if request.method == 'POST':
+        dataUsuario = request.POST['nuevoUsuario']
+        dataPassword = request.POST['nuevoPassword']
+
+        nuevoUsuario = User.objects.create_user(username=dataUsuario, password=dataPassword)
+
+        if nuevoUsuario is not None:
+            login(request, nuevoUsuario)
+            return redirect('/cuenta')
+
+    return render(request, 'login.html')
+
+def cuentaUsuario(request):
+    return render(request, 'cuenta.html')

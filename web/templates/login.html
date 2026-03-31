@@ -11,7 +11,7 @@
         <div class="auth-wrap">
             <div class="auth-col">
                 <h2>Login</h2>
-                <form method="post" class="login" action="{% url 'web:loginUsuario' %}">
+                <form method="post" class="login" action="#">
                     {% csrf_token %}
                     <p>
                         <label for="username">E-mail <span class="required">*</span></label>
