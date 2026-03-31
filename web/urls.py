@@ -15,5 +15,6 @@ urlpatterns = [
     path('limpiarCarrito/', views.limpiarCarrito, name='limpiarCarrito'),
     path('crearUsuario/', views.crearUsuario, name='crearUsuario'),
     path('cuenta/', views.cuentaUsuario, name='cuentaUsuario'),
-    path('actualizarCliente/', views.actualizarCliente, name='actualizarCliente')
+    path('actualizarCliente/', views.actualizarCliente, name='actualizarCliente'),
+    path('login/', views.loginUsuario, name='loginUsuario'),
 ]

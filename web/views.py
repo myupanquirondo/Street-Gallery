@@ -104,8 +104,50 @@ def crearUsuario(request):
 
     return render(request, 'login.html')
 
+
+def loginUsuario(request):
+    context = {}
+
+    if request.method == 'POST':
+        dataUsuario = request.POST['usuario']
+        dataPassword = request.POST['password']
+
+        usuarioAuth = authenticate(request,username=dataUsuario,password=dataPassword)
+        if usuarioAuth is not None:
+            login(request,usuarioAuth)
+            return redirect('/cuenta')
+        else:
+            context = {
+                'mensajeError':'Datos incorrectos'
+            }
+
+    return render(request, 'login.html',context)
+
+
 def cuentaUsuario(request):
-    frmCliente = ClienteForm()
+
+    try:
+        clienteEditar = Cliente.objects.get(usuario = request.user)
+
+        dataCliente = {
+            'nombre':request.user.first_name,
+            'apellidos':request.user.last_name,
+            'email':request.user.email,
+            'direccion':clienteEditar.direccion,
+            'telefono':clienteEditar.telefono,
+            'dni':clienteEditar.dni,
+            'sexo':clienteEditar.sexo,
+            'fecha_nacimiento':clienteEditar.fecha_nacimiento
+        }
+    except:
+        dataCliente = {
+            'nombre':request.user.first_name,
+            'apellidos':request.user.last_name,
+            'email':request.user.email
+        }
+
+
+    frmCliente = ClienteForm(dataCliente)
     context = {
         'frmCliente':frmCliente
     }
