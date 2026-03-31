@@ -6,6 +6,8 @@ from .carrito import Cart
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout,authenticate
 
+from django.contrib.auth.decorators import login_required
+
 from .forms import ClienteForm
 
 # Create your views here.
@@ -106,15 +108,22 @@ def crearUsuario(request):
 
 
 def loginUsuario(request):
-    context = {}
+    paginaDestino = request.GET.get('next',None)
+    context = {
+        'destino':paginaDestino
+    }
 
     if request.method == 'POST':
         dataUsuario = request.POST['usuario']
         dataPassword = request.POST['password']
+        dataDestino = request.POST['destino']
 
         usuarioAuth = authenticate(request,username=dataUsuario,password=dataPassword)
         if usuarioAuth is not None:
             login(request,usuarioAuth)
+            if dataDestino != 'None':
+                return redirect(dataDestino)
+
             return redirect('/cuenta')
         else:
             context = {
@@ -123,6 +132,10 @@ def loginUsuario(request):
 
     return render(request, 'login.html',context)
 
+
+def logoutUsuario(request):
+    logout(request)
+    return render(request, 'login.html')
 
 def cuentaUsuario(request):
 
@@ -145,7 +158,6 @@ def cuentaUsuario(request):
             'apellidos':request.user.last_name,
             'email':request.user.email
         }
-
 
     frmCliente = ClienteForm(dataCliente)
     context = {
@@ -186,3 +198,34 @@ def actualizarCliente(request):
     }
 
     return render(request, 'cuenta.html', context)
+
+""" VISTAS PARA PROCESO DE COMPRA """
+
+@login_required(login_url='/login')
+def registrarPedido(request):
+    try:
+        clienteEditar = Cliente.objects.get(usuario = request.user)
+
+        dataCliente = {
+            'nombre':request.user.first_name,
+            'apellidos':request.user.last_name,
+            'email':request.user.email,
+            'direccion':clienteEditar.direccion,
+            'telefono':clienteEditar.telefono,
+            'dni':clienteEditar.dni,
+            'sexo':clienteEditar.sexo,
+            'fecha_nacimiento':clienteEditar.fecha_nacimiento
+        }
+    except:
+        dataCliente = {
+            'nombre':request.user.first_name,
+            'apellidos':request.user.last_name,
+            'email':request.user.email
+        }
+        
+    frmCliente = ClienteForm(dataCliente)
+    context = {
+        'frmCliente':frmCliente
+    }
+    
+    return render(request, 'pedido.html',context)
