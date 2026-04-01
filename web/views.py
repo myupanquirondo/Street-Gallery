@@ -283,10 +283,21 @@ def confirmarPedido(request):
             clientePedido.save()
         #registramos nuevo pedido
         nroPedido = ''
-        montoTotal = 0
+        montoTotal = float(request.session.get('cartMontoTotal'))
         nuevoPedido = Pedido()
         nuevoPedido.cliente = clientePedido
         nuevoPedido.save()
+
+        #registramos el detalle del pedido
+        carritoPedido = request.session.get('cart')
+        for key,value in carritoPedido.items():
+            productoPedido = Producto.objects.get(pk=value['producto_id'])
+            detalle = PedidoDetalle()
+            detalle.pedido = nuevoPedido
+            detalle.producto = productoPedido
+            detalle.cantidad = int(value['cantidad'])
+            detalle.subtotal = float(value['subtotal'])
+            detalle.save()
 
         #actualizar pedido
         nroPedido = 'PED' + nuevoPedido.fecha_registro.strftime('%y%m') + str(nuevoPedido.id)
@@ -294,8 +305,28 @@ def confirmarPedido(request):
         nuevoPedido.monto_total = montoTotal
         nuevoPedido.save()
 
-        context = {
-            'pedido': nuevoPedido
+
+        #Creamos boton de paypal
+        paypal_dict = {
+            "business": "sb-4dkfb50078052@business.example.com",
+            "amount": montoTotal,
+            "item_name": "Pedido Codigo: "+ nroPedido,
+            "invoice": nroPedido,
+            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+            "return": request.build_absolute_uri('/gracias'),
+            "cancel_return": request.build_absolute_uri('/'),
         }
-        
+
+        # Create the instance.
+        formPaypal = PayPalPaymentsForm(initial=paypal_dict)
+
+        context = {
+            'pedido': nuevoPedido,
+            'formPaypal': formPaypal
+        }
+
+        #limpiamos carrito de compras
+        carrito = Cart(request)
+        carrito.clear()
+
     return render(request, 'compra.html', context)
