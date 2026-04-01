@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import Categoria, Producto, Cliente
+from .models import Categoria, Producto, Cliente, Pedido, PedidoDetalle
 from .carrito import Cart
 
 from django.contrib.auth.models import User
@@ -254,3 +254,48 @@ def view_that_asks_for_money(request):
     form = PayPalPaymentsForm(initial=paypal_dict)
     context = {"form": form}
     return render(request, "payment.html", context)
+
+
+@login_required(login_url='/login')
+def confirmarPedido(request):
+    return render(request, 'compra.html')
+
+@login_required(login_url='/login')
+def confirmarPedido(request):
+    context = {}
+    if request.method == "POST":
+        #actualizamos datos de usuario
+        actUsuario = User.objects.get(pk=request.user.id)
+        actUsuario.first_name = request.POST['nombre']
+        actUsuario.last_name = request.POST['apellidos']
+        actUsuario.save()
+        #registramos o actualizamos cliente
+        try:
+            clientePedido = Cliente.objects.get(usuario=request.user)
+            clientePedido.telefono = request.POST['telefono']
+            clientePedido.direccion = request.POST['direccion']
+            clientePedido.save()
+        except:
+            clientePedido = Cliente()
+            clientePedido.usuario = actUsuario
+            clientePedido.direccion = request.POST['direccion']
+            clientePedido.telefono = request.POST['telefono']
+            clientePedido.save()
+        #registramos nuevo pedido
+        nroPedido = ''
+        montoTotal = 0
+        nuevoPedido = Pedido()
+        nuevoPedido.cliente = clientePedido
+        nuevoPedido.save()
+
+        #actualizar pedido
+        nroPedido = 'PED' + nuevoPedido.fecha_registro.strftime('%y%m') + str(nuevoPedido.id)
+        nuevoPedido.nro_pedido = nroPedido
+        nuevoPedido.monto_total = montoTotal
+        nuevoPedido.save()
+
+        context = {
+            'pedido': nuevoPedido
+        }
+        
+    return render(request, 'compra.html', context)

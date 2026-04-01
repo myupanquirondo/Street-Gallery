@@ -1,149 +1,98 @@
 {% extends 'layout.html' %}
 {% block content %}
-
-<style>
-    .prod-li-inner {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .prod-li-img {
-        flex-shrink: 0;
-        width: 220px;
-        height: 220px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f5f5f5;
-        border-radius: 10px;
-    }
-
-    .prod-li .prod-li-img img{
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        border-radius: 10px;
-    }
-
-    .prod-li-cont {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-</style>
-
 <h1 class="maincont-ttl">REGISTRO DE PEDIDO</h1>
-
-<ul class="b-crumbs">
-    <li><a href="/">Home</a></li>
-    <li>Pedido</li>
-</ul>
-
-<form method="post" action="{% url 'web:registrarPedido' %}" class="register">
+    <ul class="b-crumbs">
+        <li><a href="/">Home</a></li>
+        <li>pedido</li>
+    </ul>
+    <form method="post" action="{% url 'web:confirmarPedido' %}" class="register">
     {% csrf_token %}
-
     <article class="page-cont">
         <div class="page-styling">
             <div class="auth-wrap">
-
-                <!-- DATOS PERSONALES -->
                 <div class="auth-col">
                     <h2>Datos Personales</h2>
-
                     <p>
-                        <label>Nombres <span class="required">*</span></label>
-                        {{ frmCliente.nombre }}
+                        <label for="username">Nombres<span class="required">*</span></label>
+                        {{frmCliente.nombre}}
                     </p>
-
                     <p>
-                        <label>Apellidos <span class="required">*</span></label>
-                        {{ frmCliente.apellidos }}
+                        <label for="username">Apellidos<span class="required">*</span></label>
+                        {{frmCliente.apellidos}}
                     </p>
                 </div>
-
-                <!-- DATOS DE ENVÍO -->
                 <div class="auth-col">
-                    <h2>Datos de Envío</h2>
-
+                    <h2>Datos Envio</h2>
                     <p>
-                        <label>Teléfono <span class="required">*</span></label>
-                        {{ frmCliente.telefono }}
+                        <label for="username">Telefono<span class="required">*</span></label>
+                        {{frmCliente.telefono}}
                     </p>
-
                     <p>
-                        <label>Dirección <span class="required">*</span></label>
-                        {{ frmCliente.direccion }}
+                        <label for="username">Dirección<span class="required">*</span></label>
+                        {{frmCliente.direccion}}
                     </p>
                 </div>
-
             </div>
         </div>
     </article>
-
-    <!-- CONFIRMACIÓN DE PRODUCTOS -->
     <article class="page-cont">
         <div class="page-styling">
-
             <h2>Confirmación de Productos</h2>
-
-            <div class="woocommerce prod-items section-list">
-
+            <div class="woocommerce prod-litems section-list">
                 {% for key,value in request.session.cart.items %}
                 <article class="prod-li sectls">
                     <div class="prod-li-inner">
-
                         <a href="#" class="prod-li-img">
                             <img src="{{ value.imagen }}" alt="">
                         </a>
-
                         <div class="prod-li-cont">
-
                             <div class="prod-li-ttl-wrap">
-                                <p><a href="#">{{ value.categoria }}</a></p>
-                                <h3>{{ value.nombre }}</h3>
+                                <p>
+                                    <a href="#">value.categoria</a>
+                                </p>
+                                <h3><a href="product.html">{{ value.nombre }}</a></h3>
                             </div>
-
                             <div class="prod-li-prices">
-                                <p class="prod-li-price">${{ value.precio }}</p>
+                                <div class="prod-li-price-wrap">
+                                    <p>Precio</p>
+                                    <p class="prod-li-price">${{value.precio}}</p>
+                                </div>
                             </div>
-
                             <div class="prod-li-qnt-wrap">
-                                <input type="text" value="{{ value.cantidad }}">
+                                <p class="qnt-wrap prod-li-qnt">
+                                    <a href="#" class="qnt-plus prod-li-plus"><i class="icon ion-arrow-up-b"></i></a>
+                                    <input type="text" value="{{value.cantidad}}">
+                                    <a href="#" class="qnt-minus prod-li-minus"><i class="icon ion-arrow-down-b"></i></a>
+                                </p>
                             </div>
-
                             <div class="prod-li-total-wrap">
                                 <p>Total</p>
-                                <p class="prod-li-total">${{ value.subtotal }}</p>
+                                <p class="prod-li-total">${{value.subtotal}}</p>
                             </div>
-
                         </div>
                     </div>
                 </article>
                 {% endfor %}
-
-            </div>
-
-            <!-- TOTAL -->
-            <div class="cart-actions">
+        </div>
+        <div class="cart-actions">
                 <div class="cart-collaterals">
                     <div class="order-total">
                         <p class="cart-totals-ttl">Total</p>
-                        <p class="cart-totals-val">${{ request.session.cartMontoTotal }}</p>
+                        <p class="cart-totals-val">${{request.session.cartMontoTotal}}</p>
                     </div>
                 </div>
-            </div>
-
-            <!-- BOTÓN -->
-            <div style="margin-top:20px;">
-                <button type="submit" class="button">
-                    Confirmar Pedido
-                </button>
-            </div>
-
+        </div>
         </div>
     </article>
-
-</form>
-
+    <article class="page-cont">
+        <div class="page-styling">
+            <div class="auth-wrap">
+                <div class="auth-col">
+                    <p class="auth-submit">
+                        <input type="submit" value="Confirmar Pedido">
+                    </p>
+            </div>
+        </div>
+    </article>
+    </form>
 {% endblock %}
