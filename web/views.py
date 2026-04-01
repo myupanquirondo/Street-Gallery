@@ -10,6 +10,10 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import ClienteForm
 
+from paypal.standard.forms import PayPalPaymentsForm
+
+from django.urls import reverse
+
 # Create your views here.
 """ VISTAS PARA EL CATALOGO DE PRODUCTOS """
 def index(request):
@@ -229,3 +233,24 @@ def registrarPedido(request):
     }
     
     return render(request, 'pedido.html',context)
+
+
+""" PAYPAL """
+def view_that_asks_for_money(request):
+
+    # What you want the button to do.
+    paypal_dict = {
+        "business": "sb-4dkfb50078052@business.example.com",
+        "amount": "100.00",
+        "item_name": "producto de prueba",
+        "invoice": "100-USD",
+        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+        "return": request.build_absolute_uri('/'),
+        "cancel_return": request.build_absolute_uri('/logout'),
+        "custom": "premium_plan",  # Custom command to correlate to some function later (optional)
+    }
+
+    # Create the instance.
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {"form": form}
+    return render(request, "payment.html", context)
