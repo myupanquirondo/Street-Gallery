@@ -1,9 +1,70 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1 class="maincont-ttl">Checkout OK</h1>
-    <ul class="b-crumbs">
-        <li><a href="index.html">Home</a></li>
-        <li>COMPRA</li>
-    </ul>
-    <h2>GRACIAS POR TU COMPRA</h2>    
+
+<style>
+    .checkout-box {
+        max-width: 700px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .check-icon {
+        font-size: 60px;
+        color: #28a745;
+        margin-bottom: 15px;
+    }
+
+    .order-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 8px;
+    }
+
+    .order-info p {
+        margin: 5px 0;
+    }
+
+    .btn-home {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 25px;
+        background: #000;
+        color: #fff;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .btn-home:hover {
+        background: #333;
+    }
+</style>
+
+<div class="checkout-box">
+
+    <div class="check-icon">✔</div>
+
+    <h1>¡Compra realizada con éxito!</h1>
+    <p>Gracias por confiar en nosotros 🙌</p>
+
+    <div class="order-info">
+        <p><strong>Número de Pedido:</strong></p>
+        <h2>{{ pedido.nro_pedido }}</h2>
+    </div>
+
+    <p style="margin-top:15px;">
+        Te hemos enviado un correo con los detalles de tu compra 📩
+    </p>
+
+    <a href="/" class="btn-home">
+        Seguir comprando
+    </a>
+
+</div>
+
 {% endblock %}

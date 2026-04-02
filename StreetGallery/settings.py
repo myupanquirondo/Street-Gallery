@@ -133,3 +133,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 PAYPAL_TEST = True
+
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '7ca786438284a4'
+EMAIL_HOST_PASSWORD = '9df39f8f002721'
+EMAIL_PORT = '2525'

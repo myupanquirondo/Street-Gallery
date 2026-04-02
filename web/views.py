@@ -14,6 +14,8 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 from django.urls import reverse
 
+from django.core.mail import send_mail
+
 # Create your views here.
 """ VISTAS PARA EL CATALOGO DE PRODUCTOS """
 def index(request):
@@ -305,6 +307,8 @@ def confirmarPedido(request):
         nuevoPedido.monto_total = montoTotal
         nuevoPedido.save()
 
+        #registrar variable de sesion para el pedido
+        request.session['pedidoId'] = nuevoPedido.id
 
         #Creamos boton de paypal
         paypal_dict = {
@@ -330,3 +334,31 @@ def confirmarPedido(request):
         carrito.clear()
 
     return render(request, 'compra.html', context)
+
+
+@login_required(login_url='/login')
+def gracias(request):
+    paypalId = request.GET.get('PayerID', None)
+    context = {}
+
+    if paypalId is not None:
+        pedidoId = request.session.get('pedidoId')
+        pedido = Pedido.objects.get(pk=pedidoId)
+        pedido.estado = '1'
+        pedido.save()
+
+        send_mail(
+            "GRACIAS POR TU COMPRA",
+            "Tu nro de pedido es: " + pedido.nro_pedido,
+            "admin@gmail.com",
+            [request.user.email],
+            fail_silently=False,
+        )
+
+        context = {
+            'pedido': pedido
+        }
+    else:
+        return redirect('/')
+
+    return render(request, 'gracias.html', context)
