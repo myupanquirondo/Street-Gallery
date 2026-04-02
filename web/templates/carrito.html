@@ -10,15 +10,15 @@
         {% for key,value in request.session.cart.items %}
         <article class="prod-li sectls">
             <div class="prod-li-inner">
-                <a href="product.html" class="prod-li-img">
+                <a href="javascript:void(0)" class="prod-li-img">
                     <img src="{{ value.imagen }}" alt="">
                 </a>
                 <div class="prod-li-cont">
                     <div class="prod-li-ttl-wrap">
                         <p>
-                            <a href="#">{{ value.categoria }}</a>
+                            <span>{{ value.categoria }}</span>
                         </p>
-                        <h3><a href="product.html">{{ value.nombre }}</a></h3>
+                        <h3><a href="javascript:void(0)">{{ value.nombre }}</a></h3>
                     </div><!--
             No Space
             -->
