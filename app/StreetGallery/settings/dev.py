@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure--&-0orgo7%uurxp+p@gncso_sx-t7=_=w3eob#z-(2-@68*3hc"
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -81,14 +81,13 @@ WSGI_APPLICATION = "StreetGallery.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "db_StreetGallery",
-        "USER": "root",
-        "PASSWORD": "123",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        "NAME": config('DATABASE_NAME'),
+        "USER": config('DATABASE_USR'),
+        "PASSWORD": config('DATABASE_PWD'),
+        "HOST": config('DATABASE_HOST'),
+        "PORT": config('DATABASE_PORT', cast=int),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -137,9 +136,9 @@ MEDIA_URL = '/media/'
 PAYPAL_TEST = True
 PAYPAL_USER_EMAIL = config('PAYPAL_USER_EMAIL')
 
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '7ca786438284a4'
-EMAIL_HOST_PASSWORD = '9df39f8f002721'
-EMAIL_PORT = '2525'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
 
 ADMIN_USER_EMAIL = config('ADMIN_USER_EMAIL')
